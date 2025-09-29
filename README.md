@@ -2,8 +2,7 @@
 
 **Black-Vector** is a compact, hacker-styled web search console UI built with plain HTML, CSS, and JavaScript.
 It provides a retro "console" look with quick search controls and specialized search modes (movies, images,
-documents, songs and maps). It's designed as a front-end helper to craft search queries (including useful
-Google dork-style queries) and open the results in a new tab.
+documents, songs and maps). It's designed as a front-end helper to craft search queries and open the results in a new tab.
 
 ---
 
@@ -22,7 +21,7 @@ Google dork-style queries) and open the results in a new tab.
 
 ## Usage
 
-1. Open `index.html` (the provided HTML file) in any modern browser.
+1. Open `Black-Vector.html` (the provided HTML file) in any modern browser.
 2. Choose a search type from the dropdown.
    - For **Movie**, **Document**, **Image**, or **Song**, select a file type (e.g., `mp4`, `pdf`, `jpg`, `mp3`).
    - For **Map**, either type a place name or provide latitude and longitude.
@@ -50,7 +49,7 @@ Google dork-style queries) and open the results in a new tab.
 
 ## Files
 
-- `index.html` — Main HTML/CSS/JS single-file front-end.
+- `Black-Vector.html` — Main HTML/CSS/JS single-file front-end.
 - `README.md` — (this file) usage and customization guide.
 
 ---
