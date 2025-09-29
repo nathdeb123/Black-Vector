@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Theme switching
+        function setTheme(mode) {
+            if (mode === 'light') {
+                document.body.style.background = '#f4f4f4';
+                document.body.style.color = '#061826';
+                document.querySelectorAll('.console-box').forEach(function(box){
+                    box.style.background = '#fff';
+                    box.style.borderColor = '#061826';
+                    box.style.boxShadow = '0 0 20px #06182633';
+                });
+                document.querySelectorAll('input, select, button, label').forEach(function(el){
+                    el.style.background = '#fff';
+                    el.style.color = '#061826';
+                    el.style.borderColor = '#061826';
+                });
+            } else {
+                document.body.style.background = '#061826';
+                document.body.style.color = '#00fff7';
+                document.querySelectorAll('.console-box').forEach(function(box){
+                    box.style.background = 'rgba(0, 20, 40, 0.85)';
+                    box.style.borderColor = '#00fff7';
+                    box.style.boxShadow = '0 0 20px #00fff733';
+                });
+                document.querySelectorAll('input, select, button, label').forEach(function(el){
+                    el.style.background = '#061826';
+                    el.style.color = '#00fff7';
+                    el.style.borderColor = '#00fff7';
+                });
+            }
+        }
+        // Battery info
+        function updateBatteryInfo() {
+            if (navigator.getBattery) {
+                navigator.getBattery().then(function(battery) {
+                    document.getElementById('batteryText').textContent =
+                        'Battery: ' + Math.round(battery.level * 100) + '% | Charging: ' + (battery.charging ? 'Yes' : 'No');
+                });
+            } else {
+                document.getElementById('batteryText').textContent = 'Battery info not available';
+            }
+        }
+        // CPU info (limited in browser)
+        function updateCPUInfo() {
+            if (window.navigator.hardwareConcurrency) {
+                document.getElementById('cpuText').textContent = 'CPU Cores: ' + window.navigator.hardwareConcurrency;
+            } else {
+                document.getElementById('cpuText').textContent = 'CPU info not available';
+            }
+        }
+        // On load, update info
+        window.onload = function() {
+            updateFileTypeOptions();
+            updateBatteryInfo();
+            updateCPUInfo();
+            setTheme('dark');
+        };
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black-Vector</title>
+    <style>
+        body {
+            background: #061826;
+            color: #00fff7;
+            font-family: 'Share Tech Mono', 'Consolas', monospace;
+            margin: 0;
+            padding: 0;
+        }
+        .console-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 30px;
+        }
+        .console-box {
+            background: rgba(0, 20, 40, 0.85);
+            border: 2px solid #00fff7;
+            border-radius: 8px;
+            box-shadow: 0 0 20px #00fff733;
+            padding: 20px;
+            flex: 1 1 400px;
+            min-width: 350px;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            letter-spacing: 0.1em;
+            color: #00fff7;
+            margin-top: 30px;
+            text-shadow: 0 0 10px #00fff7, 0 0 30px #00fff7;
+        }
+        label, select, input, button {
+            font-family: inherit;
+            color: #00fff7;
+            background: #061826;
+            border: 1px solid #00fff7;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        input, select {
+            padding: 8px;
+        }
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #00fff7;
+            color: #061826;
+        }
+        .footer {
+            text-align: center;
+            color: #00fff799;
+            font-size: 1em;
+            margin-top: 40px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Black-Vector</h1>
+    <div style="text-align:center; margin-bottom:20px;">
+        <button onclick="setTheme('dark')">Dark Mode</button>
+        <button onclick="setTheme('light')">Light Mode</button>
+    </div>
+    <div class="console-container">
+        <div class="console-box">
+            <label for="searchInput">Search Console</label><br>
+            <input type="text" id="searchInput" placeholder="Enter your query...">
+            <select id="searchType" onchange="updateFileTypeOptions()">
+                <option value="Google">Google</option>
+                <option value="movie">Movie</option>
+                <option value="image">Image</option>
+                <option value="document">Document</option>
+                <option value="map">Map</option>
+                <option value="song">Song</option>
+            </select>
+            <select id="fileType" style="display: none;"></select>
+            <div id="mapInputs" style="margin-top: 10px; display: none;">
+                <input type="text" id="latitude" placeholder="Latitude">
+                <input type="text" id="longitude" placeholder="Longitude">
+            </div>
+            <button onclick="searchGoogle()">Search</button>
+        </div>
+        <div class="console-box">
+            <label>Info Console</label>
+            <div style="font-size:1em; margin-top:10px;">
+                <span id="infoText">Select a search type and enter your query.<br>
+                For map: enter a location name or latitude/longitude.<br>
+                For images/songs: select file type.<br>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="footer">System Online | <span id="batteryTextFooter">Power: --</span> | <span id="timeText">--:--:--</span></div>
+    <script>
+        function changeWallpaper() {
+            var url = document.getElementById('wallpaperSelect').value;
+            if (url === 'none') {
+                document.body.style.background = '#061826';
+            } else {
+                document.body.style.background = 'url(' + url + ') no-repeat center center fixed';
+                document.body.style.backgroundSize = 'cover';
+            }
+        }
+    </script>
+    <script>
+        // Update time in footer
+        function updateTime() {
+            var now = new Date();
+            var h = String(now.getHours()).padStart(2, '0');
+            var m = String(now.getMinutes()).padStart(2, '0');
+            var s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('timeText').textContent = h + ':' + m + ':' + s;
+        }
+        setInterval(updateTime, 1000);
+        // Update battery in footer
+        if (navigator.getBattery) {
+            navigator.getBattery().then(function(battery) {
+                function updateFooterBattery() {
+                    document.getElementById('batteryTextFooter').textContent = 'Power: ' + Math.round(battery.level * 100) + '%';
+                }
+                battery.addEventListener('levelchange', updateFooterBattery);
+                battery.addEventListener('chargingchange', updateFooterBattery);
+                updateFooterBattery();
+            });
+        }
+    </script>
+    <script>
+        function updateFileTypeOptions() {
+            var type = document.getElementById('searchType').value;
+            var fileType = document.getElementById('fileType');
+            var mapInputs = document.getElementById('mapInputs');
+            fileType.innerHTML = '';
+            fileType.style.display = 'none';
+            mapInputs.style.display = 'none';
+            if (type === 'Google') {
+                // No extra options for normal search
+            } else if (type === 'movie') {
+                fileType.style.display = '';
+                ['mkv', 'mp4', 'avi'].forEach(function(ft) {
+                    var opt = document.createElement('option');
+                    opt.value = ft;
+                    opt.text = ft.toUpperCase();
+                    fileType.appendChild(opt);
+                });
+            } else if (type === 'image') {
+                fileType.style.display = '';
+                ['jpg', 'png', 'gif', 'bmp','webp','ico','svg'].forEach(function(ft) {
+                    var opt = document.createElement('option');
+                    opt.value = ft;
+                    opt.text = ft.toUpperCase();
+                    fileType.appendChild(opt);
+                });
+            } else if (type === 'document') {
+                fileType.style.display = '';
+                ['pdf', 'doc', 'ppt'].forEach(function(ft) {
+                    var opt = document.createElement('option');
+                    opt.value = ft;
+                    opt.text = ft.toUpperCase();
+                    fileType.appendChild(opt);
+                });
+            } else if (type === 'song') {
+                fileType.style.display = '';
+                ['mp3', 'flac', 'wav'].forEach(function(ft) {
+                    var opt = document.createElement('option');
+                    opt.value = ft;
+                    opt.text = ft.toUpperCase();
+                    fileType.appendChild(opt);
+                });
+            } else if (type === 'map') {
+                mapInputs.style.display = '';
+            }
+        }
+
+        // Initialize file type options on page load
+        window.onload = function() {
+            updateFileTypeOptions();
+            document.body.style.background = 'url(https://cdn.wallpapersafari.com/6/15/JaiuQL.jpg) no-repeat center center fixed';
+            document.body.style.backgroundSize = 'cover';
+        };
+
+        function getDork(query, type, fileType) {
+            switch(type) {
+                case 'normal':
+                    return query.trim();
+                case 'movie':
+                    return `intitle:index.of? ${fileType} "${query}" -html -htm -php -asp -txt`;
+                case 'image':
+                    // Use Google Images search directly for better results
+                    return `IMAGES_DIRECT:${query.trim()} filetype:${fileType}`;
+                case 'document':
+                    return `filetype:${fileType} "${query}"`;
+                case 'map':
+                    // If latitude and longitude are provided, go directly to location
+                    var lat = document.getElementById('latitude').value.trim();
+                    var lng = document.getElementById('longitude').value.trim();
+                    if (lat && lng) {
+                        return `MAP_LOCATION_DIRECT:${lat},${lng}`;
+                    } else if (query.trim() !== "") {
+                        return `MAP_NAME_DIRECT:${query.trim()}`;
+                    } else {
+                        return '';
+                    }
+                case 'song':
+                    // Use Google dork for audio files
+                    return `index of  ${fileType} ${query.trim()} download`;
+                default:
+                    return query;
+            }
+        }
+
+        function searchGoogle() {
+            var query = document.getElementById('searchInput').value;
+            var type = document.getElementById('searchType').value;
+            var fileType = document.getElementById('fileType').value;
+            var dorkQuery;
+            if (query.trim() !== "" || type === 'map') {
+                if (type === 'normal') {
+                    dorkQuery = getDork(query, type, fileType);
+                    window.open('https://www.google.com/search?q=' + encodeURIComponent(dorkQuery), '_blank');
+                } else if (type === 'movie' || type === 'document' || type === 'song') {
+                    dorkQuery = getDork(query, type, fileType);
+                    window.open('https://www.google.com/search?q=' + encodeURIComponent(dorkQuery), '_blank');
+                } else if (type === 'image') {
+                    dorkQuery = getDork(query, type, fileType);
+                    if (dorkQuery.startsWith('IMAGES_DIRECT:')) {
+                        var imgQuery = dorkQuery.replace('IMAGES_DIRECT:', '');
+                        window.open('https://www.google.com/images?q=' + encodeURIComponent(imgQuery), '_blank');
+                    } else {
+                        window.open('https://www.google.com/search?q=' + encodeURIComponent(dorkQuery), '_blank');
+                    }
+                } else if (type === 'map') {
+                    dorkQuery = getDork(query, type, '');
+                    if (dorkQuery.startsWith('MAP_LOCATION_DIRECT:')) {
+                        var coords = dorkQuery.replace('MAP_LOCATION_DIRECT:', '');
+                        window.open('https://www.google.com/maps?q=' + coords, '_blank');
+                    } else if (dorkQuery.startsWith('MAP_NAME_DIRECT:')) {
+                        var name = dorkQuery.replace('MAP_NAME_DIRECT:', '');
+                        window.open('https://www.google.com/maps/search/' + encodeURIComponent(name), '_blank');
+                    }
+                } else {
+                    dorkQuery = getDork(query, type, '');
+                    window.open('https://www.google.com/search?q=' + encodeURIComponent(dorkQuery), '_blank');
+                }
+            }
+        }
+        document.getElementById('searchInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                searchGoogle();
+            }
+        });
+    </script>
+</body>
+</html>
